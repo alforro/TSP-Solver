@@ -90,12 +90,13 @@ class RandomMatrix(object):
   def get_coordinates(self, solution):
       coord=[]
       dist=[]
+      print "LA SOLUCION ES ", solution
       for node in solution:
           coord_temp =  self.coordinates[node]
           coord+=[coord_temp]
 
       #[coord for coord, dist in self.sorted_d]
-      print "las coordenadas son: "
+      print "las coordenadas son: ", coord
       return coord
   def get_coord_test(self, solution):
       coord = []
@@ -147,9 +148,8 @@ def tsp_backtrack(A,current,path,cost,distance_matrix):
     return check_shortest
 
 
-def tsp(A,l,length_so_far,distance_matrix):
-    """tsp implementation with a backtracking approach"""
-    #TODO: agregar un limite a la cantidad de nodos expandidos
+def tsp_backtracking(A,l,length_so_far,distance_matrix):
+    """TSP implementation with a backtracking approach"""
     n = len(A)
     global expanded_nodes,check_shortest, shortest
     if expanded_nodes<30000000:
@@ -168,8 +168,28 @@ def tsp(A,l,length_so_far,distance_matrix):
       return check_shortest
     else:
       return check_shortest
-def tsp_heuristic():
-    return 0
+
+def tsp_heuristic(graph,distance_matrix):
+    global shortest, check_shortest, expanded_nodes
+    a = [0]
+    b = range(1,len(graph))
+    while b:
+        min = 100000000
+        # last node placed in a
+        last = a[-1]
+        neighbors = graph[last]
+        for n in neighbors:
+            if n not in a:
+                if distance_matrix[a[-1]][n] < min:
+                    min = distance_matrix[a[-1]][n]
+                    next = n
+        b.remove (next)
+        expanded_nodes += 1
+        check_shortest += distance_matrix[next][a[-1]]
+        a.append (next)
+    a.append(0)
+    shortest = a
+    return check_shortest
 
 def get_shortest():
     return shortest
@@ -195,7 +215,9 @@ def main(args):
         A+=[i]
       print A
       start = timeit.default_timer()
-      solution =tsp(A,0,0, matrix.distance_matrix)
+      print "LA LONGITUD DE A ES:",len(A)
+      #solution =tsp(A,0,0, matrix.distance_matrix)
+      solution = tsp_heuristic(graph)
       stop = timeit.default_timer()
       print "El tiempo de ejecucion fue de: ",stop - start
       print "El costo de la solucion es de: ", solution

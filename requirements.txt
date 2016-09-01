@@ -1,0 +1,7 @@
+decorator (4.0.10)
+Django (1.10)
+networkx (1.11)
+numpy (1.11.1)
+pip (8.1.2)
+setuptools (26.0.0)
+wheel (0.29.0)

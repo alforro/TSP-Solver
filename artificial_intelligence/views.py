@@ -38,7 +38,8 @@ def run_tsp(request):
             print "matrix.distance es: ", matrix.distance_matrix
 
             start = timeit.default_timer()
-            solution = tsp(A, 0, 0, matrix.distance_matrix)
+            #solution = tsp_backtracking(A, 0, 0, matrix.distance_matrix)
+            solution = tsp_heuristic(graph, matrix.distance_matrix)
             stop = timeit.default_timer()
             print "El tiempo de ejecucion fue de: ", stop - start
             print "El costo de la solucion es de: ", solution
@@ -56,8 +57,13 @@ def run_tsp(request):
             solution_cost = solution
             expanded_nodes = get_expanded_nodes()
             execution_time = stop-start
-            backtracking_solution = Bactracking_Solution(matrix_size=matrix_size, solution_cost=solution_cost, coordinates=coordinates, expanded_nodes=expanded_nodes,execution_time=execution_time)
+            print "matrix size: ",n
+            print "coordinates: ", coordinates
+            print "cost: ", solution_cost
+            print "expanded nodes: ", expanded_nodes
+            print "runtime: ", execution_time
+            backtracking_solution = Bactracking_Solution(matrix_size=matrix_size, solution_cost=solution_cost, coordinates=coordinates, expanded_nodes=int(expanded_nodes),execution_time=execution_time)
             backtracking_solution.save()
-        return render(request, 'results.html',{"coordinates_django":result})
+        return render(request, 'results.html',{"coordinates_django":coordinates})
     else:
       return render(request,'results.html',{"coordinates_django":coordenadas})
