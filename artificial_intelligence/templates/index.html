@@ -1,0 +1,82 @@
+{% extends 'layout.html' %}
+{% load staticfiles %}
+{% block body %}
+<body>
+<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+        <div class="header">
+            <h1 class="brand-title"><a href="/">Travelling Salesman Problem Solver</a></h1>
+            <h2 class="brand-tagline">Developed by Alvaro Rodriguez</h2>
+
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a class="pure-button" href="https://www.facebook.com/alvaro.rodriguez.olmedo">Facebook</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="pure-button" href="https://github.com/alforro">Github</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div>
+                <section class="post">
+                    <header class="post-header">
+                        <img class="post-avatar" alt="Alvaro Rodriguez" height="48" width="48" src="{% static 'img/common/alvaro-avatar.ico' %}">
+
+                        <h2 class="post-title">TSP</h2>
+
+                        <p class="post-meta">
+                            By <a class="post-author" href="https://www.facebook.com/alvaro.rodriguez.olmedo">Alvaro Rodriguez</a> under <a class="post-category post-category-yui" href="#">AI</a>
+                        </p>
+                    </header>
+
+                    <div class="post-description">
+                        <p>
+                            The travelling salesman problem (TSP) asks the following question: Given a list of cities and the distances between each pair of cities, what is the shortest possible route that visits each city exactly once and returns to the origin city? It is an NP-hard problem in combinatorial optimization, important in operations research and theoretical computer science.
+                        </p>
+                    </div>
+                    {% block formulario %}
+                    <form action="/run_tsp/" method="post" class="pure-form pure-form-stacked">
+                        {% csrf_token %}
+                        <fieldset>
+                            <legend>Legend</legend>
+
+
+                                {% include "input_form.html" %}
+                                <div class="pure-u-1-1">
+                                    <button type="submit" class="pure-button pure-button-primary">Run</button>
+                                </div>
+                        </fieldset>
+                    </form>
+
+                    {% endblock %}
+                      <div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+                </section>
+            </div>
+
+            <div class="footer">
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul>
+                        <li class="pure-menu-item"><a href="https://www.facebook.com/alvaro.rodriguez.olmedo" class="pure-menu-link">About</a></li>
+                        <li class="pure-menu-item"><a href="http://twitter.com/yuilibrary/" class="pure-menu-link">Facebook</a></li>
+                        <li class="pure-menu-item"><a href="https://github.com/alforro" class="pure-menu-link">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</body>
+{% endblock %}
+
