@@ -163,7 +163,7 @@ def tsp_backtracking(A,l,length_so_far,distance_matrix):
           A[l+1], A[i] = A[i], A[l+1]
           new_length = length_so_far + distance_matrix[A[l]][A[l+1]]
           if new_length<=check_shortest:
-            check_shortest=min(check_shortest,tsp(A,l+1,new_length,distance_matrix))
+            check_shortest=min(check_shortest,tsp_backtracking(A,l+1,new_length,distance_matrix))
           A[l+1], A[i] = A[i], A[l+1]
       return check_shortest
     else:
@@ -173,9 +173,11 @@ def tsp_heuristic(graph,distance_matrix):
     global shortest, check_shortest, expanded_nodes
     a = [0]
     b = range(1,len(graph))
+    check_shortest = 0
+    expanded_nodes=0
     while b:
-        min = 100000000
         # last node placed in a
+        min = 100000000
         last = a[-1]
         neighbors = graph[last]
         for n in neighbors:
@@ -191,11 +193,63 @@ def tsp_heuristic(graph,distance_matrix):
     shortest = a
     return check_shortest
 
+def two_opt(solution, distance_matrix):
+    minchange = 0;
+    while(True):
+      for i in range(len(solution)-2):
+        print i
+        for j in range(i+2,len(solution)-1):
+          print "(i, j) = (",i,",",j,")"
+          change = distance_matrix[i][j]+distance_matrix[i+1][j+1]-distance_matrix[i][i+1]-distance_matrix[j][j+1]
+          change = 0
+          if(minchange>change):
+            minchange = change
+            mini=i
+            minj=j
+        #solution[i+1], solution[i+2] = solution[minj], solution[mini]
+        print solution
+      break
+    return solution
+
+def other_two_otp(solution, distance_matrix):
+    n=len(solution)-1
+    print "fuera de i:", solution
+    for i in range(n-3):
+      for j in range(i+1,n-1):
+        print "Dentro de j:", solution
+        print "(",i,",",j,")"
+        newdistance = distance_matrix[i][j]+distance_matrix[i+1][j+1]-distance_matrix[i][i+1]-distance_matrix[j][j+1]
+        print "i=>j (",i,",",j,")"
+        print "i+1=>j+1 (",i + 1,",",j + 1,")"
+        print "i=>i+1 (",i,",",i + 1,")"
+        print "j=>j+1 (",j,",",j + 1,")"
+        print "before", newdistance
+        print solution
+        if newdistance<0:
+          print "ENTRO ACA CARAJO"
+          #old_path = solution
+          #solution[i + 1]= old_path[i + j]
+          #solution[i + j] = old_path[i + 1]
+          print "solution[i+1]", solution[i + 1], i+1
+          print "solution[i+j]", solution[i + 1], j+ i
+          print "solution[i+j]", solution[i + 1]
+          print "solution[i+1]", solution[i + 1]
+          solution[i+1], solution[i+j] = solution[i+j], solution[i+1]
+    return solution
+          #for k in range(j):
+            #solution[i + k] = old_path[i + j - k]
+
+
+
 def get_shortest():
     return shortest
 
 def get_expanded_nodes():
     return expanded_nodes
+
+def set_expanded_nodes(n):
+    global expanded_nodes
+    expanded_nodes=n
 
 def main(args):
   # Create routing model
@@ -223,6 +277,8 @@ def main(args):
       print "El costo de la solucion es de: ", solution
       print "La cantidad de nodos expandidos fue de: ", expanded_nodes
       print "Y el path es:", shortest
+      opt2 = other_two_otp(solution,matrix.distance_matrix)
+      print "la optimizacion es:", opt2
       #coordenadas = matrix.get_coordinates(shortest)
       coordenadas = matrix.get_coord_test(shortest)
       for each in coordenadas:

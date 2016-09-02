@@ -10,3 +10,4 @@ class Bactracking_Solution(models.Model):
     coordinates = models.CharField(max_length=100000)
     expanded_nodes = models.IntegerField(default=0)
     execution_time = models.FloatField(default=0.0)
+    nodes = models.IntegerField(default=0)

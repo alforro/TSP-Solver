@@ -6,35 +6,21 @@
         <tr>
             <th>N - Size of the board</th>
             <th>Amount of nodes created</th>
-            <th>Time to find one solution</th>
-            <th>Time to find all the solutions</th>
-            <th>Expanded Nodes</th>
+            <th>Runtime</th>
+            <th>Expanded nodes</th>
+            <th>Solution Path</th>
+            <th>Cost</th>
         </tr>
     </thead>
 
     <tbody>
         <tr>
-            <td>1</td>
-            <td>Honda</td>
-            <td>Accord</td>
-            <td>2009</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>2</td>
-            <td>Toyota</td>
-            <td>Camry</td>
-            <td>2012</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td>3</td>
-            <td>Hyundai</td>
-            <td>Elantra</td>
-            <td>2010</td>
-            <td></td>
+            <td>{{ matrix_size }}x{{ matrix_size }}</td>
+            <td>{{ nodes }}</td>
+            <td>{{ runtime }}</td>
+            <td>{{ expanded_nodes }}</td>
+            <td>{{ coordinates }}</td>
+            <td>{{ cost }}</td>
         </tr>
     </tbody>
 </table>
