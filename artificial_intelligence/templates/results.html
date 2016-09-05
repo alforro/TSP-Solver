@@ -4,6 +4,7 @@
 <table class="pure-table pure-table-bordered">
     <thead>
         <tr>
+            <th>Method</th>
             <th>N - Size of the board</th>
             <th>Amount of nodes created</th>
             <th>Runtime</th>
@@ -15,12 +16,31 @@
 
     <tbody>
         <tr>
+            <td>Backtracking</td>
             <td>{{ matrix_size }}x{{ matrix_size }}</td>
             <td>{{ nodes }}</td>
-            <td>{{ runtime }}</td>
-            <td>{{ expanded_nodes }}</td>
-            <td>{{ coordinates }}</td>
-            <td>{{ cost }}</td>
+            <td>{{ backtracking_runtime }}</td>
+            <td>{{ backtracking_expanded_nodes }}</td>
+            <td>{{ coordinates_backtracking }}</td>
+            <td>{{ backtracking_cost }}</td>
+        </tr>
+        <tr>
+            <td>Heuristic Nearest Neighbor</td>
+            <td>{{ matrix_size }}x{{ matrix_size }}</td>
+            <td>{{ nodes }}</td>
+            <td>{{ heuristic_runtime }}</td>
+            <td>{{ heuristic_expanded_nodes }}</td>
+            <td>{{ coordinates_heuristic }}</td>
+            <td>{{ heuristic_cost }}</td>
+        </tr>
+            <tr>
+            <td>Heuristic Nearest Neighbor + 2opt optimization</td>
+            <td>{{ matrix_size }}x{{ matrix_size }}</td>
+            <td>{{ nodes }}</td>
+            <td>{{ two_opt_runtime }}</td>
+            <td>{{ two_opt_expanded_nodes }}</td>
+            <td>{{ coordinates_two_opt }}</td>
+            <td>{{ two_opt_cost }}</td>
         </tr>
     </tbody>
 </table>

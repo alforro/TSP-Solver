@@ -46,23 +46,43 @@
       google.charts.setOnLoadCallback(drawChart);
       <!-- fix del bug de las coordenadas, NO TOCAR CARAJO! -->
       var coordinates = [['x','y']].concat({{ coordinates_django }});
+      var heuristic_coordinates = [['x','y']].concat({{ coordinates_heuristic }})
+      var two_opt_coordinates = [['x','y']].concat({{ coordinates_two_opt }})
+
       console.log(coordinates)
       function drawChart() {
       var data = google.visualization.arrayToDataTable(coordinates);
         var options = {
-          title: 'Suboptimal Solution',
+          title: 'Backtracking Solution',
           hAxis: {title: 'x', minValue: 0, maxValue: 3},
           vAxis: {title: 'y', minValue: 0, maxValue: 3},
           legend: 'none',
 	  lineWidth: 1
         };
-
-        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
-
+      var heuristic_data = google.visualization.arrayToDataTable(heuristic_coordinates);
+        var options_heuristic = {
+          title: 'Heuristic Solution',
+          hAxis: {title: 'x', minValue: 0, maxValue: 3},
+          vAxis: {title: 'y', minValue: 0, maxValue: 3},
+          legend: 'none',
+	  lineWidth: 1
+        };
+      var two_opt_data = google.visualization.arrayToDataTable(two_opt_coordinates);
+        var options_two_opt = {
+          title: 'Heuristic + 2opt Solution',
+          hAxis: {title: 'x', minValue: 0, maxValue: 3},
+          vAxis: {title: 'y', minValue: 0, maxValue: 3},
+          legend: 'none',
+	  lineWidth: 1
+        };
+        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div_backtracking'));
+	    var chart_heuristic = new google.visualization.ScatterChart(document.getElementById('chart_div_heuristic'));
+	    var chart_two_opt = new google.visualization.ScatterChart(document.getElementById('chart_div_two_opt'));
         chart.draw(data, options);
+	    chart_heuristic.draw(heuristic_data, options_heuristic);
+	    chart_two_opt.draw(two_opt_data, options_two_opt);
       }
-
-    </script>
+   </script>
 
 
 

@@ -25,35 +25,27 @@ parser.add_argument('--tsp_size', default = 8, type = int,
 check_shortest = 100000000000
 shortest = []
 expanded_nodes = 0
-def find_shortest_path(graph, current, parent, distance_matrix, path,cost):
-    global shortest
-    global check_shortest
-    path = path + [current]
-    #print "ahora el path es:",path
-    if cost>check_shortest:
-        return None, None
 
-    #add the cost of the final node to the origin node
-    if len(path)==len(distance_matrix) and cost+distance_matrix[current][0]< check_shortest:
-        path = path + [0]
-        cost += distance_matrix[current][0]
-        return path, cost
-    #shortest = None
-    for edge in graph[current]:
-        if edge not in path:
-            (newpath, newcost) = find_shortest_path(graph, edge, current, distance_matrix,path,cost+distance_matrix[parent,current])
+def get_shortest():
+  return shortest
 
-            if path:
-                trash = path.pop()
+def get_expanded_nodes():
+  return expanded_nodes
 
-            if newpath:
-                if newcost<check_shortest:
-                    shortest = newpath
-                    check_shortest=newcost
-                    print "el shortest es", check_shortest
+def get_check_shortest():
+  return shortest
 
-    return shortest, cost
+def set_expanded_nodes(n):
+  global expanded_nodes
+  expanded_nodes=n
 
+def set_check_shortest(n):
+  global check_shortest
+  check_shortest=n
+
+def set_shortest(n):
+  global shortest
+  shortest=n
 
 
 class RandomMatrix(object):
@@ -72,16 +64,14 @@ class RandomMatrix(object):
     return math.sqrt(xdiff*xdiff + ydiff*ydiff)
 
   def normalize(self,a):
-      if (a > 0.7):
+      """ All the values below 0.5 should be 0 and in the other case will be 1"""
+      if (a > 0.5):
           return 1
       else:
           return 0
 
   def distance(self, size):
     n=len(self.coordinates)
-    print n
-    print "Coordenadas:"
-    print self.coordinates
     self.distance_matrix=np.zeros((n,n),dtype=np.float)
     for coord, dist in self.sorted_d:
       (row,column)=coord
@@ -89,28 +79,23 @@ class RandomMatrix(object):
 
   def get_coordinates(self, solution):
       coord=[]
-      dist=[]
-      print "LA SOLUCION ES ", solution
       for node in solution:
           coord_temp =  self.coordinates[node]
           coord+=[coord_temp]
-
-      #[coord for coord, dist in self.sorted_d]
-      print "las coordenadas son: ", coord
       return coord
+
   def get_coord_test(self, solution):
       coord = []
-      dist = []
       for node in solution:
           coord_temp = self.coordinates[node]
           coord += [coord_temp]
       return np.asarray(coord)
+
   def __init__(self, size):
     """Create the matrix that will store the coordinates of the nodes"""
     vectorial_function = np.vectorize(self.normalize)
     self.matrix = vectorial_function(np.random.random((size, size)))
     print self.matrix
-    #extract the coordinates equals to 1
     self.coordinates = np.nonzero(self.matrix)
     self.coordinates = np.transpose(self.coordinates)
 
@@ -124,28 +109,6 @@ class RandomMatrix(object):
             D[j, i] = D[i, j]
     # sort the values of D
     self.sorted_d = sorted(D.items(),key=operator.itemgetter(0))
-
-def tsp_backtrack(A,current,path,cost,distance_matrix):
-    global check_shortest
-    global shortest
-    print "el valor de path es:", path
-    if len(path)==len(int(A)):
-      print "el valor de path es:", path
-      if cost+distance_matrix[path[len(path)-1]][0] < check_shortest:
-        check_shortest=cost+distance_matrix[path[len(path)-1]][0]
-        shortest=path+[0]
-        print "ahora el camino mas corto es de:", check_shortest
-        print "y el camino es: ", shortest
-    else:
-      for i in range(len(path)+1,len(distance_matrix)):
-        if i not in path:
-          print "el cost + distance es:", cost+distance_matrix[current][i]
-          if cost+distance_matrix[current][i]<check_shortest:
-            check_shortest = min(check_shortest, tsp_backtrack(graph, i, path + [i],cost+distance_matrix[current][i], distance_matrix))
-            check_shortest=cost
-          if path:
-            trash=path.pop()
-    return check_shortest
 
 
 def tsp_backtracking(A,l,length_so_far,distance_matrix):
@@ -191,65 +154,44 @@ def tsp_heuristic(graph,distance_matrix):
         a.append (next)
     a.append(0)
     shortest = a
+    check_shortest += distance_matrix[shortest[len(shortest)-2]][0]
     return check_shortest
 
-def two_opt(solution, distance_matrix):
-    minchange = 0;
-    while(True):
-      for i in range(len(solution)-2):
-        print i
-        for j in range(i+2,len(solution)-1):
-          print "(i, j) = (",i,",",j,")"
-          change = distance_matrix[i][j]+distance_matrix[i+1][j+1]-distance_matrix[i][i+1]-distance_matrix[j][j+1]
-          change = 0
-          if(minchange>change):
-            minchange = change
-            mini=i
-            minj=j
-        #solution[i+1], solution[i+2] = solution[minj], solution[mini]
-        print solution
-      break
-    return solution
+def two_opt_swap(route, i, k):
+  if i<>0 and k<>0:
+  #print "LA SOLUCION QUE SE ENVIO DENTRO DEL SWAP ES:",route
+    new_route = route[0:i]
+    temp = route[i:k]
+    temp.reverse()
+    new_route+=temp
+    new_route+=route[k:]
+    return new_route
+  else:
+    return route
 
-def other_two_otp(solution, distance_matrix):
-    n=len(solution)-1
-    print "fuera de i:", solution
-    for i in range(n-3):
-      for j in range(i+1,n-1):
-        print "Dentro de j:", solution
-        print "(",i,",",j,")"
-        newdistance = distance_matrix[i][j]+distance_matrix[i+1][j+1]-distance_matrix[i][i+1]-distance_matrix[j][j+1]
-        print "i=>j (",i,",",j,")"
-        print "i+1=>j+1 (",i + 1,",",j + 1,")"
-        print "i=>i+1 (",i,",",i + 1,")"
-        print "j=>j+1 (",j,",",j + 1,")"
-        print "before", newdistance
-        print solution
-        if newdistance<0:
-          print "ENTRO ACA CARAJO"
-          #old_path = solution
-          #solution[i + 1]= old_path[i + j]
-          #solution[i + j] = old_path[i + 1]
-          print "solution[i+1]", solution[i + 1], i+1
-          print "solution[i+j]", solution[i + 1], j+ i
-          print "solution[i+j]", solution[i + 1]
-          print "solution[i+1]", solution[i + 1]
-          solution[i+1], solution[i+j] = solution[i+j], solution[i+1]
-    return solution
-          #for k in range(j):
-            #solution[i + k] = old_path[i + j - k]
-
-
-
-def get_shortest():
-    return shortest
-
-def get_expanded_nodes():
-    return expanded_nodes
-
-def set_expanded_nodes(n):
+def tsp_two_opt(solution, distance_matrix):
     global expanded_nodes
-    expanded_nodes=n
+    changes = 0
+    number_of_nodes=len(solution)
+
+    while(changes<3):
+      changes+=1
+      best_distance = calculate_cost(solution, distance_matrix)
+      for i in range(number_of_nodes - 1):
+        for k in range(i+1,number_of_nodes):
+          expanded_nodes+=1
+          new_route = two_opt_swap(solution, i, k)
+          new_distance = calculate_cost(new_route, distance_matrix)
+          if (new_distance < best_distance):
+            solution = new_route
+    return solution
+
+def calculate_cost(solution, distance_matrix):
+  cost = 0
+  #print distance_matrix
+  for i in range(len(solution)-1):
+    cost += distance_matrix[solution[i]][solution[i+1]]
+  return cost
 
 def main(args):
   # Create routing model
@@ -261,9 +203,6 @@ def main(args):
       # se crea un grafo completamente conexo que se utilizara para recorrer el grafo e ir agregando los pesos
       graph = matrix.create_graph()
 
-      #(solution, cost) = find_shortest_path(graph,0,0, matrix.distance_matrix,[],0)
-      print "ACA EMPIEZA EL KILOMBO"
-      #solution= tsp_backtrack(graph,0,[0],0,matrix.distance_matrix)
       A=[]
       for i in graph:
         A+=[i]
@@ -271,18 +210,24 @@ def main(args):
       start = timeit.default_timer()
       print "LA LONGITUD DE A ES:",len(A)
       #solution =tsp(A,0,0, matrix.distance_matrix)
-      solution = tsp_heuristic(graph)
+      solution = tsp_heuristic(graph, matrix.distance_matrix)
       stop = timeit.default_timer()
       print "El tiempo de ejecucion fue de: ",stop - start
       print "El costo de la solucion es de: ", solution
       print "La cantidad de nodos expandidos fue de: ", expanded_nodes
       print "Y el path es:", shortest
-      opt2 = other_two_otp(solution,matrix.distance_matrix)
+      #opt2 = other_two_otp(shortest,matrix.distance_matrix)
+      opt2 = tsp_two_opt(shortest, matrix.distance_matrix)
+      print "el camino original fue", shortest
       print "la optimizacion es:", opt2
+      new_cost = calculate_cost(opt2, matrix.distance_matrix)
+      print "El costo original:", solution
+      print "El costo optimizado", new_cost
+      print "La solucion original fue:", shortest
+      print "El camino optimizado fue", opt2
       #coordenadas = matrix.get_coordinates(shortest)
       coordenadas = matrix.get_coord_test(shortest)
-      for each in coordenadas:
-          print each[0]
+
 
 
 if __name__ == '__main__':
